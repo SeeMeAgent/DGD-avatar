@@ -68,7 +68,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
                 <option value="">Select an avatar</option>
                 <optgroup label="Official Avatars">
                   {avatars
-                    .filter((avatar) => avatar.from !== 3)
+                    .filter((avatar) => avatar.is_official)
                     .map((avatar, index) => (
                       <option
                         key={index}
@@ -81,7 +81,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
                 </optgroup>
                 <optgroup label="Custom Avatars">
                   {avatars
-                    .filter((avatar) => avatar.from === 3)
+                    .filter((avatar) => !avatar.is_official)
                     .map((avatar, index) => (
                       <option
                         key={index}

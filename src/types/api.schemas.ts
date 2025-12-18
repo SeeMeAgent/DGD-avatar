@@ -56,6 +56,7 @@ export interface Avatar {
   voice_id: string;
   thumbnailUrl: string;
   available: boolean;
+  is_official: boolean;
 }
 
 export interface Knowledge {
