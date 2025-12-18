@@ -300,6 +300,8 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
             <select value={modeType} onChange={(e) => setModeType(Number(e.target.value))}>
               <option value={1}>Repeat</option>
               <option value={2}>Dialogue</option>
+              <option value={3}>Lip Sync Only</option>
+              <option value={4}>Fast Dialogue</option>
             </select>
           </div>
 
