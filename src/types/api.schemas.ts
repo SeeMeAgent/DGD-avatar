@@ -64,6 +64,9 @@ export interface Knowledge {
   name: string;
 }
 
+export type SceneMode = 'fast_dialogue' | 'meeting';
+export type E2EType = 'openai';
+
 export interface SessionOptions {
   avatar_id: string;
   duration: number;
@@ -75,6 +78,8 @@ export interface SessionOptions {
   background_url?: string;
   voice_params?: Record<string, unknown>;
   stream_type?: StreamProviderType;
+  scene_mode?: SceneMode;
+  e2e_type?: E2EType;
 }
 
 export interface SessionCredentials {

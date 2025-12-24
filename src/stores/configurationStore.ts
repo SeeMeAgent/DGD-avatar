@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { StreamProviderType } from '../types/streaming.types';
+import { SceneMode, E2EType } from '../types/api.schemas';
 
 interface ConfigurationState {
   // Provider selection
@@ -19,6 +20,8 @@ interface ConfigurationState {
   sessionDuration: number;
   modeType: number;
   language: string;
+  sceneMode: SceneMode | '';
+  e2eType: E2EType | '';
 
   // Background and voice settings
   backgroundUrl: string;
@@ -41,6 +44,8 @@ interface ConfigurationState {
   setSessionDuration: (duration: number) => void;
   setModeType: (modeType: number) => void;
   setLanguage: (language: string) => void;
+  setSceneMode: (sceneMode: SceneMode | '') => void;
+  setE2eType: (e2eType: E2EType | '') => void;
   setBackgroundUrl: (url: string) => void;
   setVoiceUrl: (url: string) => void;
   setVoiceParams: (params: Record<string, unknown>) => void;
@@ -64,6 +69,8 @@ interface ConfigurationState {
     background_url?: string;
     voice_params?: Record<string, unknown>;
     stream_type?: StreamProviderType;
+    scene_mode?: SceneMode;
+    e2e_type?: E2EType;
   };
   resetToDefaults: () => void;
   validateConfiguration: () => { isValid: boolean; errors: string[] };
@@ -82,6 +89,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
       sessionDuration: 10,
       modeType: Number(import.meta.env.VITE_MODE_TYPE) || 2,
       language: import.meta.env.VITE_LANGUAGE || 'en',
+      sceneMode: '',
+      e2eType: '',
       backgroundUrl: import.meta.env.VITE_BACKGROUND_URL || '',
       voiceUrl: import.meta.env.VITE_VOICE_URL || '',
       voiceParams: {},
@@ -100,6 +109,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
       setSessionDuration: (duration: number) => set({ sessionDuration: duration }),
       setModeType: (modeType: number) => set({ modeType }),
       setLanguage: (language: string) => set({ language }),
+      setSceneMode: (sceneMode: SceneMode | '') => set({ sceneMode }),
+      setE2eType: (e2eType: E2EType | '') => set({ e2eType }),
       setBackgroundUrl: (url: string) => set({ backgroundUrl: url }),
       setVoiceUrl: (url: string) => set({ voiceUrl: url }),
       setVoiceParams: (params: Record<string, unknown>) => set({ voiceParams: params }),
@@ -137,6 +148,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
           background_url: state.backgroundUrl || undefined,
           voice_params: Object.keys(state.voiceParams).length > 0 ? state.voiceParams : undefined,
           stream_type: state.selectedProvider,
+          scene_mode: state.sceneMode || undefined,
+          e2e_type: state.e2eType || undefined,
         };
       },
 
@@ -151,6 +164,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
           sessionDuration: 10,
           modeType: 2,
           language: 'en',
+          sceneMode: '',
+          e2eType: '',
           backgroundUrl: '',
           voiceUrl: '',
           voiceParams: {},
@@ -199,6 +214,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
         sessionDuration: state.sessionDuration,
         modeType: state.modeType,
         language: state.language,
+        sceneMode: state.sceneMode,
+        e2eType: state.e2eType,
         backgroundUrl: state.backgroundUrl,
         voiceUrl: state.voiceUrl,
         voiceParams: state.voiceParams,

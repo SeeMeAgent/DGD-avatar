@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { ApiService, Session, SessionOptions } from '../apiService';
 import { StreamingCredentials } from '../types/provider.interfaces';
 import { StreamProviderType, VideoTrack } from '../types/streaming.types';
+import { SceneMode, E2EType } from '../types/api.schemas';
 import { useStreamingContext } from './useStreamingContext';
 import { logger } from '../core/Logger';
 
@@ -50,6 +51,8 @@ interface UseStreamingSessionParams {
   language: string;
   modeType: number;
   voiceParams: Record<string, unknown>;
+  sceneMode?: SceneMode | '';
+  e2eType?: E2EType | '';
   api: ApiService | null;
   localVideoTrack?: VideoTrack | null;
   providerType?: StreamProviderType;
@@ -65,6 +68,8 @@ export const useStreamingSession = ({
   language,
   modeType,
   voiceParams,
+  sceneMode,
+  e2eType,
   api,
   localVideoTrack,
   providerType = 'agora',
@@ -187,6 +192,8 @@ export const useStreamingSession = ({
         background_url: backgroundUrl,
         voice_params: voiceParams,
         stream_type: providerType, // Pass the selected provider type to get appropriate credentials
+        scene_mode: sceneMode || undefined,
+        e2e_type: e2eType || undefined,
       };
 
       const session = await api.createSession(sessionOptions);
@@ -224,6 +231,8 @@ export const useStreamingSession = ({
     modeType,
     backgroundUrl,
     voiceParams,
+    sceneMode,
+    e2eType,
   ]);
 
   const closeStreaming = useCallback(async () => {

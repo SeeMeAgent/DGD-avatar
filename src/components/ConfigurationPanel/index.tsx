@@ -43,6 +43,10 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
     setModeType,
     language,
     setLanguage,
+    sceneMode,
+    setSceneMode,
+    e2eType,
+    setE2eType,
 
     // Background and voice
     backgroundUrl,
@@ -300,10 +304,41 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
             <select value={modeType} onChange={(e) => setModeType(Number(e.target.value))}>
               <option value={1}>Repeat</option>
               <option value={2}>Dialogue</option>
-              <option value={3}>Lip Sync Only</option>
-              <option value={4}>Fast Dialogue</option>
             </select>
           </div>
+
+          {/* Scene Mode */}
+          <div className="form-row">
+            <label>Scene Mode:</label>
+            <select
+              value={sceneMode}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                const value = e.target.value;
+                setSceneMode(value === 'fast_dialogue' ? 'fast_dialogue' : value === 'meeting' ? 'meeting' : '');
+              }}
+            >
+              <option value="">Default</option>
+              <option value="fast_dialogue">Fast Dialogue</option>
+              <option value="meeting">Meeting</option>
+            </select>
+          </div>
+
+          {/* E2E Type - only show when scene_mode is 'fast_dialogue' */}
+          {sceneMode === 'fast_dialogue' && (
+            <div className="form-row">
+              <label>E2E Type:</label>
+              <select
+                value={e2eType}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  const value = e.target.value;
+                  setE2eType(value === 'openai' ? 'openai' : '');
+                }}
+              >
+                <option value="">Default</option>
+                <option value="openai">OpenAI</option>
+              </select>
+            </div>
+          )}
 
           {/* Knowledge ID */}
           <div className="form-row">

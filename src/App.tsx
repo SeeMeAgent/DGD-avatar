@@ -30,6 +30,8 @@ const App: React.FC = () => {
     language,
     modeType,
     voiceParams,
+    sceneMode,
+    e2eType,
   } = useConfigurationStore();
 
   // Provider context
@@ -93,6 +95,8 @@ const App: React.FC = () => {
     language,
     modeType,
     voiceParams,
+    sceneMode,
+    e2eType,
     api,
     localVideoTrack,
     providerType,
