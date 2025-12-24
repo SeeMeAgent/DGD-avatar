@@ -126,6 +126,10 @@ const App: React.FC = () => {
     };
   }, []); // Empty dependency array - only runs on mount/unmount
 
+  // Business logic: Compute UI restrictions based on scene mode
+  const isTextInputEnabled = sceneMode !== 'fast_dialogue';
+  const isCameraInputEnabled = sceneMode !== 'fast_dialogue';
+
   return (
     <>
       <ConfigurationPanel
@@ -155,6 +159,8 @@ const App: React.FC = () => {
           toggleNoiseReduction={toggleNoiseReduction}
           isDumping={isDumping}
           dumpAudio={dumpAudio}
+          isTextInputEnabled={isTextInputEnabled}
+          isCameraInputEnabled={isCameraInputEnabled}
           onSystemMessageCallback={(callback) => {
             systemMessageCallbackRef.current = callback;
           }}

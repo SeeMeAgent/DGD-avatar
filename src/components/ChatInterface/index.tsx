@@ -18,6 +18,8 @@ interface ChatInterfaceProps {
   toggleNoiseReduction: () => Promise<void>;
   isDumping: boolean;
   dumpAudio: () => Promise<void>;
+  isTextInputEnabled: boolean;
+  isCameraInputEnabled: boolean;
   onSystemMessageCallback?: (
     callback: (messageId: string, text: string, systemType: string, metadata?: Record<string, unknown>) => void,
   ) => void;
@@ -35,6 +37,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   toggleNoiseReduction,
   isDumping,
   dumpAudio,
+  isTextInputEnabled,
+  isCameraInputEnabled,
   onSystemMessageCallback,
 }) => {
   // State for resizable height
@@ -85,6 +89,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         toggleNoiseReduction={toggleNoiseReduction}
         isDumping={isDumping}
         dumpAudio={dumpAudio}
+        isTextInputEnabled={isTextInputEnabled}
+        isCameraInputEnabled={isCameraInputEnabled}
         inputMessage={inputMessage}
         setInputMessage={setInputMessage}
         sendMessage={sendMessage}

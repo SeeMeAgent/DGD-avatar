@@ -16,6 +16,8 @@ interface ChatControlsProps {
   toggleNoiseReduction: () => Promise<void>;
   isDumping: boolean;
   dumpAudio: () => Promise<void>;
+  isTextInputEnabled: boolean;
+  isCameraInputEnabled: boolean;
   inputMessage: string;
   setInputMessage: (message: string) => void;
   sendMessage: () => void;
@@ -39,6 +41,8 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
   toggleNoiseReduction,
   isDumping,
   dumpAudio,
+  isTextInputEnabled,
+  isCameraInputEnabled,
   inputMessage,
   setInputMessage,
   sendMessage,
@@ -47,6 +51,13 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
   // Check if debug features should be shown (default: false)
   const showDebugFeatures = import.meta.env.VITE_DEBUG_FEATURES === 'true';
   const { sendInterrupt } = useStreamingContext();
+
+  // Computed properties for UI display
+  const shouldShowTextInput = !micEnabled && isTextInputEnabled;
+  const isCameraDisabled = !isCameraInputEnabled;
+  const cameraDisabledReason = isCameraDisabled
+    ? 'Camera not available in Fast Dialogue mode'
+    : cameraError || (cameraEnabled ? 'Disable camera' : 'Enable camera');
 
   const toggleMicInternal = async () => {
     if (toggleMic) {
@@ -139,12 +150,12 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
       <IconButton
         icon={cameraEnabled ? 'videocam' : 'videocam_off'}
         onClick={toggleCameraInternal}
-        disabled={!connected}
+        disabled={!connected || isCameraDisabled}
         variant={cameraError ? 'error' : 'default'}
-        title={cameraError || (cameraEnabled ? 'Disable camera' : 'Enable camera')}
+        title={cameraDisabledReason}
       />
 
-      {!micEnabled && (
+      {shouldShowTextInput && (
         <>
           <input
             type="text"
