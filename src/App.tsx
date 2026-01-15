@@ -20,7 +20,8 @@ const App: React.FC = () => {
   // Configuration from store
   const {
     openapiHost,
-    openapiToken,
+    openapiCredential,
+    authMethod,
     avatarId,
     knowledgeId,
     sessionDuration,
@@ -63,8 +64,8 @@ const App: React.FC = () => {
 
   // Initialize API service when credentials change
   useEffect(() => {
-    if (openapiHost && openapiToken) {
-      const apiService = new ApiService(openapiHost, openapiToken);
+    if (openapiHost && openapiCredential) {
+      const apiService = new ApiService(openapiHost, openapiCredential, authMethod);
       // Set up notification callback for API errors
       apiService.setNotificationCallback((message, title) => {
         showError(message, title);
@@ -73,7 +74,7 @@ const App: React.FC = () => {
     } else {
       setApi(null);
     }
-  }, [openapiHost, openapiToken, showError]);
+  }, [openapiHost, openapiCredential, authMethod, showError]);
 
   // Camera controls (now provider-agnostic)
   const {

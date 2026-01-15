@@ -25,8 +25,10 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
     // OpenAPI settings
     openapiHost,
     setOpenapiHost,
-    openapiToken,
-    setOpenapiToken,
+    openapiCredential,
+    setOpenapiCredential,
+    authMethod,
+    setAuthMethod,
 
     // Avatar settings
     avatarId,
@@ -89,7 +91,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
   useEffect(() => {
     const validation = validateConfiguration();
     setValidationErrors(validation.errors);
-  }, [validateConfiguration, openapiToken, openapiHost, avatarId, voiceId, knowledgeId]);
+  }, [validateConfiguration, openapiCredential, openapiHost, avatarId, voiceId, knowledgeId]);
 
   // Update background URL input when store changes
   useEffect(() => {
@@ -168,14 +170,43 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
             />
           </div>
 
-          {/* Token */}
+          {/* Authentication Method */}
           <div className="form-row">
-            <label>Token:</label>
+            <label>Authentication:</label>
+            <div className="auth-method-selector">
+              <label className="auth-method-option">
+                <input
+                  type="radio"
+                  name="authMethod"
+                  value="token"
+                  checked={authMethod === 'token'}
+                  onChange={(e) => setAuthMethod(e.target.value as 'token')}
+                  disabled={isJoined}
+                />
+                <span>Token</span>
+              </label>
+              <label className="auth-method-option">
+                <input
+                  type="radio"
+                  name="authMethod"
+                  value="apiKey"
+                  checked={authMethod === 'apiKey'}
+                  onChange={(e) => setAuthMethod(e.target.value as 'apiKey')}
+                  disabled={isJoined}
+                />
+                <span>API Key</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Credential Input */}
+          <div className="form-row">
+            <label>{authMethod === 'token' ? 'Token:' : 'API Key:'}</label>
             <input
               type="password"
-              placeholder="Enter API token"
-              value={openapiToken}
-              onChange={(e) => setOpenapiToken(e.target.value)}
+              placeholder={authMethod === 'token' ? 'Enter API token' : 'Enter API key'}
+              value={openapiCredential}
+              onChange={(e) => setOpenapiCredential(e.target.value)}
               disabled={isJoined}
             />
           </div>

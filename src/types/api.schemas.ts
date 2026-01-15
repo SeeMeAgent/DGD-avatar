@@ -66,6 +66,7 @@ export interface Knowledge {
 
 export type SceneMode = 'fast_dialogue' | 'meeting';
 export type E2EType = 'openai';
+export type AuthMethod = 'token' | 'apiKey';
 
 export interface SessionOptions {
   avatar_id: string;

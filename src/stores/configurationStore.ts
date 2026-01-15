@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { StreamProviderType } from '../types/streaming.types';
-import { SceneMode, E2EType } from '../types/api.schemas';
+import { SceneMode, E2EType, AuthMethod } from '../types/api.schemas';
 
 interface ConfigurationState {
   // Provider selection
   selectedProvider: StreamProviderType;
 
-  // OpenAPI configuration (single global API key)
+  // OpenAPI configuration
   openapiHost: string;
-  openapiToken: string;
+  openapiCredential: string;
+  authMethod: AuthMethod;
 
   // Avatar settings
   avatarId: string;
@@ -37,7 +38,8 @@ interface ConfigurationState {
   // Actions
   setSelectedProvider: (provider: StreamProviderType) => void;
   setOpenapiHost: (host: string) => void;
-  setOpenapiToken: (token: string) => void;
+  setOpenapiCredential: (credential: string) => void;
+  setAuthMethod: (method: AuthMethod) => void;
   setAvatarId: (avatarId: string) => void;
   setVoiceId: (voiceId: string) => void;
   setKnowledgeId: (knowledgeId: string) => void;
@@ -82,7 +84,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
       // Initial state - matching App.tsx defaults with environment variable fallbacks
       selectedProvider: (import.meta.env.VITE_STREAM_TYPE as 'agora' | 'livekit' | 'trtc') || 'agora',
       openapiHost: import.meta.env.VITE_OPENAPI_HOST || '',
-      openapiToken: import.meta.env.VITE_OPENAPI_TOKEN || '',
+      openapiCredential: import.meta.env.VITE_OPENAPI_TOKEN || '',
+      authMethod: 'token',
       avatarId: import.meta.env.VITE_AVATAR_ID || '',
       voiceId: import.meta.env.VITE_VOICE_ID || '',
       knowledgeId: '',
@@ -102,7 +105,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
       // Actions
       setSelectedProvider: (provider: StreamProviderType) => set({ selectedProvider: provider }),
       setOpenapiHost: (host: string) => set({ openapiHost: host }),
-      setOpenapiToken: (token: string) => set({ openapiToken: token }),
+      setOpenapiCredential: (credential: string) => set({ openapiCredential: credential }),
+      setAuthMethod: (method: AuthMethod) => set({ authMethod: method }),
       setAvatarId: (avatarId: string) => set({ avatarId }),
       setVoiceId: (voiceId: string) => set({ voiceId }),
       setKnowledgeId: (knowledgeId: string) => set({ knowledgeId }),
@@ -122,7 +126,7 @@ export const useConfigurationStore = create<ConfigurationState>()(
       // Getters and utilities
       isApiConfigured: () => {
         const state = get();
-        return !!(state.openapiHost && state.openapiToken);
+        return !!(state.openapiHost && state.openapiCredential);
       },
 
       isAvatarConfigured: () => {
@@ -132,7 +136,7 @@ export const useConfigurationStore = create<ConfigurationState>()(
 
       isFullyConfigured: () => {
         const state = get();
-        return !!(state.openapiHost && state.openapiToken && state.avatarId);
+        return !!(state.openapiHost && state.openapiCredential && state.avatarId);
       },
 
       getSessionOptions: () => {
@@ -157,7 +161,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
         set({
           selectedProvider: 'agora',
           openapiHost: '',
-          openapiToken: '',
+          openapiCredential: '',
+          authMethod: 'token',
           avatarId: '',
           voiceId: '',
           knowledgeId: '',
@@ -182,8 +187,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
         if (!state.openapiHost) {
           errors.push('OpenAPI host is required');
         }
-        if (!state.openapiToken) {
-          errors.push('OpenAPI token is required');
+        if (!state.openapiCredential) {
+          errors.push(state.authMethod === 'token' ? 'OpenAPI token is required' : 'API key is required');
         }
         if (!state.avatarId) {
           errors.push('Avatar ID is required');
@@ -207,7 +212,8 @@ export const useConfigurationStore = create<ConfigurationState>()(
       partialize: (state) => ({
         selectedProvider: state.selectedProvider,
         openapiHost: state.openapiHost,
-        openapiToken: state.openapiToken,
+        openapiCredential: state.openapiCredential,
+        authMethod: state.authMethod,
         avatarId: state.avatarId,
         voiceId: state.voiceId,
         knowledgeId: state.knowledgeId,

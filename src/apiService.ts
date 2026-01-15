@@ -8,6 +8,7 @@ import type {
   Knowledge,
   SessionOptions,
   Session,
+  AuthMethod,
 } from './types/api.schemas';
 
 // Re-export types from api.schemas.ts to maintain backward compatibility
@@ -25,12 +26,14 @@ export type {
 
 export class ApiService {
   private openapiHost: string;
-  private openapiToken: string;
+  private credential: string;
+  private authMethod: AuthMethod;
   private notificationCallback?: (message: string, title?: string) => void;
 
-  constructor(openapiHost: string, openapiToken: string) {
+  constructor(openapiHost: string, credential: string, authMethod: AuthMethod = 'token') {
     this.openapiHost = openapiHost;
-    this.openapiToken = openapiToken;
+    this.credential = credential;
+    this.authMethod = authMethod;
   }
 
   setNotificationCallback(callback: (message: string, title?: string) => void): void {
@@ -41,7 +44,9 @@ export class ApiService {
     const response = await fetch(`${this.openapiHost}${endpoint}`, {
       method,
       headers: {
-        Authorization: `Bearer ${this.openapiToken}`,
+        ...(this.authMethod === 'token'
+          ? { Authorization: `Bearer ${this.credential}` }
+          : { 'x-api-key': this.credential }),
         'Content-Type': 'application/json',
       },
       body: body ? JSON.stringify(body) : undefined,
