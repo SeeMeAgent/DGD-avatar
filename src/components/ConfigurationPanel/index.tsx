@@ -73,7 +73,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
   // --- 新增：控制侧边栏折叠的状态 ---
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // --- 新增：当开始直播(isJoined变true)时，自动折叠侧边栏 (可选) ---
+  // --- 新增：当开始直播(isJoined变true)时，自动折叠侧边栏 ---
   useEffect(() => {
     if (isJoined) {
         setIsCollapsed(true);
@@ -150,12 +150,12 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
 
   return (
     <>
-      {/* --- 新增：切换显示/隐藏的悬浮按钮 --- */}
+      {/* --- 切换显示/隐藏的悬浮按钮 --- */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
             position: 'absolute',
-            left: isCollapsed ? '10px' : '360px', // 如果侧边栏展开，按钮在侧边栏旁边；如果折叠，靠左
+            left: isCollapsed ? '10px' : '360px', 
             top: '20px',
             zIndex: 1000,
             padding: '8px 12px',
@@ -166,35 +166,28 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            transition: 'left 0.3s ease', // 增加平滑过渡
+            transition: 'left 0.3s ease',
             color: '#333'
         }}
         title={isCollapsed ? "Show Configuration" : "Hide Configuration"}
       >
         {isCollapsed ? (
-            // 展开图标 (chevron-right)
+            // 展开图标
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 18l6-6-6-6" />
             </svg>
         ) : (
-            // 收起图标 (chevron-left)
+            // 收起图标
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M15 18l-6-6 6-6" />
             </svg>
         )}
       </button>
 
-      {/* 原有的左侧栏容器，增加样式控制 */}
       <div 
         className="left-side"
         style={{
-            // 如果折叠，将宽度设为0并隐藏溢出，或者直接 display: none
-            display: isCollapsed ? 'none' : 'flex', 
-            // 如果你想让它有动画效果，可以使用下面的 width 方式代替 display: none (需要配合 styles.css 修改)
-            // width: isCollapsed ? '0px' : '350px',
-            // opacity: isCollapsed ? 0 : 1,
-            // overflow: 'hidden',
-            // transition: 'all 0.3s ease'
+            display: isCollapsed ? 'none' : 'flex'
         }}
       >
         <h3>Streaming Avatar Demo</h3>
