@@ -70,15 +70,15 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
   const [backgroundUrlInput, setBackgroundUrlInput] = useState(backgroundUrl);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  // --- 新增：控制侧边栏折叠的状态 ---
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // --- 新增：控制侧边栏显示/隐藏状态 ---
+  const [isHidden, setIsHidden] = useState(false);
 
-  // --- 新增：当开始直播(isJoined变true)时，自动折叠侧边栏 ---
+  // --- 新增：当加入房间后自动隐藏侧边栏 ---
   useEffect(() => {
     if (isJoined) {
-        setIsCollapsed(true);
+      setIsHidden(true);
     } else {
-        setIsCollapsed(false);
+      setIsHidden(false);
     }
   }, [isJoined]);
 
@@ -150,44 +150,37 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
 
   return (
     <>
-      {/* --- 切换显示/隐藏的悬浮按钮 --- */}
+      {/* --- 新增：悬浮切换按钮 --- */}
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={() => setIsHidden(!isHidden)}
         style={{
-            position: 'absolute',
-            left: isCollapsed ? '10px' : '360px', 
-            top: '20px',
-            zIndex: 1000,
-            padding: '8px 12px',
-            borderRadius: '8px',
-            backgroundColor: '#ffffff',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            transition: 'left 0.3s ease',
-            color: '#333'
+          position: 'absolute',
+          left: isHidden ? '10px' : '360px', // 配合侧边栏宽度调整位置
+          top: '20px',
+          zIndex: 1000,
+          padding: '8px',
+          borderRadius: '50%',
+          width: '32px',
+          height: '32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'white',
+          border: '1px solid #ccc',
+          cursor: 'pointer',
+          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+          transition: 'left 0.3s ease'
         }}
-        title={isCollapsed ? "Show Configuration" : "Hide Configuration"}
+        title={isHidden ? "Show Settings" : "Hide Settings"}
       >
-        {isCollapsed ? (
-            // 展开图标
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-            </svg>
-        ) : (
-            // 收起图标
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 18l-6-6 6-6" />
-            </svg>
-        )}
+        {isHidden ? '⚙️' : '◀'}
       </button>
 
+      {/* 左侧栏容器，增加 hidden 逻辑 */}
       <div 
-        className="left-side"
-        style={{
-            display: isCollapsed ? 'none' : 'flex'
+        className="left-side" 
+        style={{ 
+          display: isHidden ? 'none' : 'flex'
         }}
       >
         <h3>Streaming Avatar Demo</h3>
@@ -203,6 +196,8 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
               <ProviderSelector
                 disabled={}
                 onProviderChange={(providerType) => {
+                  // Update configuration store (already handled in ProviderSelector)
+                  // Also update streaming context for immediate UI feedback
                   switchProvider(providerType);
                 }}
               />
@@ -274,7 +269,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
                 setAvatarId={}
                 avatars={}
                 setAvatars={}
-                setAvatarVideoUrl={() => {}} 
+                setAvatarVideoUrl={() => {}} // No-op since we don't use avatar video URL in config panel
                 disabled={}
               />
             </div>
@@ -383,7 +378,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
             <div className="form-row">
               <label>ModeType:</label>
               <select value={} onChange={(e) => setModeType(Number(e.target.value))}>
-                <option value={}>Repeat</option>
+                <option value={0}>Repeat</option>
                 <option value={}>Dialogue</option>
               </select>
             </div>
@@ -404,7 +399,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
               </select>
             </div>
 
-            {/* E2E Type */}
+            {/* E2E Type - only show when scene_mode is 'fast_dialogue' */}
             {sceneMode === 'fast_dialogue' && (
               <div className="form-row">
                 <label>E2E Type:</label>
