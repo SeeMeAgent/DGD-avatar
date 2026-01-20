@@ -70,15 +70,13 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
   const [backgroundUrlInput, setBackgroundUrlInput] = useState(backgroundUrl);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  // --- 新增：控制侧边栏显示/隐藏状态 ---
-  const [isHidden, setIsHidden] = useState(false);
+  // --- 新增状态：控制侧边栏折叠 ---
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // --- 新增：当加入房间后自动隐藏侧边栏 ---
+  // 当开始直播后，自动收起侧边栏
   useEffect(() => {
     if (isJoined) {
-      setIsHidden(true);
-    } else {
-      setIsHidden(false);
+      setIsCollapsed(true);
     }
   }, [isJoined]);
 
@@ -150,37 +148,39 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
 
   return (
     <>
-      {/* --- 新增：悬浮切换按钮 --- */}
+      {/* --- 收起/展开 控制按钮 --- */}
       <button
-        onClick={() => setIsHidden(!isHidden)}
+        onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
           position: 'absolute',
-          left: isHidden ? '10px' : '360px', // 配合侧边栏宽度调整位置
+          left: isCollapsed ? '10px' : '360px', // 按钮位置随侧边栏状态变化
           top: '20px',
-          zIndex: 1000,
-          padding: '8px',
-          borderRadius: '50%',
-          width: '32px',
-          height: '32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'white',
-          border: '1px solid #ccc',
+          zIndex: 9999,
+          padding: '6px 10px',
+          background: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
           cursor: 'pointer',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-          transition: 'left 0.3s ease'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          transition: 'all 0.3s ease'
         }}
-        title={isHidden ? "Show Settings" : "Hide Settings"}
       >
-        {isHidden ? '⚙️' : '◀'}
+        {isCollapsed ? '⚙️ 配置' : '◀ 收起'}
       </button>
 
-      {/* 左侧栏容器，增加 hidden 逻辑 */}
+      {/* --- 左侧配置栏 --- */}
       <div 
-        className="left-side" 
-        style={{ 
-          display: isHidden ? 'none' : 'flex'
+        className="left-side"
+        style={{
+          // 如果折叠：隐藏且宽度为0；如果展开：保持默认宽度
+          width: isCollapsed ? '0px' : '350px', 
+          minWidth: isCollapsed ? '0px' : '350px',
+          padding: isCollapsed ? '0px' : undefined,
+          margin: 0,
+          opacity: isCollapsed ? 0 : 1,
+          overflow: 'hidden',
+          transition: 'all 0.3s ease', // 添加平滑过渡动画
+          borderRight: isCollapsed ? 'none' : '1px solid #e5e7eb'
         }}
       >
         <h3>Streaming Avatar Demo</h3>
@@ -196,8 +196,6 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
               <ProviderSelector
                 disabled={}
                 onProviderChange={(providerType) => {
-                  // Update configuration store (already handled in ProviderSelector)
-                  // Also update streaming context for immediate UI feedback
                   switchProvider(providerType);
                 }}
               />
@@ -269,7 +267,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
                 setAvatarId={}
                 avatars={}
                 setAvatars={}
-                setAvatarVideoUrl={() => {}} // No-op since we don't use avatar video URL in config panel
+                setAvatarVideoUrl={() => {}}
                 disabled={}
               />
             </div>
