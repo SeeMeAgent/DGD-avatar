@@ -13,7 +13,7 @@ interface AvatarSelectorProps {
 }
 
 // 1. 指定数字人 ID：卢沟π狮
-const CUSTOM_AVATAR_ID = "YmccSeRJRZ0ZwepqOUety";
+const CUSTOM_AVATAR_ID = "1uzJjGoIKQlIa20L6NrXC";
 
 // 2. 【核心凭证】(保留您正确的凭证)
 const AKOOL_CREDENTIALS = {
