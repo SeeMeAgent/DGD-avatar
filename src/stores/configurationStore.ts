@@ -88,7 +88,7 @@ export const useConfigurationStore = create<ConfigurationState>()(
       authMethod: 'token',
       avatarId: import.meta.env.VITE_AVATAR_ID || '',
       voiceId: import.meta.env.VITE_VOICE_ID || '',
-      knowledgeId: '',
+      knowledgeId: import.meta.env.VITE_KNOWLEDGE_ID || '',
       sessionDuration: 10,
       modeType: Number(import.meta.env.VITE_MODE_TYPE) || 2,
       language: import.meta.env.VITE_LANGUAGE || 'en',
