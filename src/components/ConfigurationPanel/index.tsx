@@ -70,13 +70,13 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
   const [backgroundUrlInput, setBackgroundUrlInput] = useState(backgroundUrl);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  // --- 新增状态：控制侧边栏折叠 ---
+  // --- 新增：控制侧边栏折叠的状态 ---
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // 当开始直播后，自动收起侧边栏
+  // 当开始直播(isJoined变true)时，自动折叠侧边栏
   useEffect(() => {
     if (isJoined) {
-      setIsCollapsed(true);
+        setIsCollapsed(true);
     }
   }, [isJoined]);
 
@@ -148,39 +148,32 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
 
   return (
     <>
-      {/* --- 收起/展开 控制按钮 --- */}
+      {/* --- 切换按钮 --- */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
-          position: 'absolute',
-          left: isCollapsed ? '10px' : '360px', // 按钮位置随侧边栏状态变化
-          top: '20px',
-          zIndex: 9999,
-          padding: '6px 10px',
-          background: '#fff',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          transition: 'all 0.3s ease'
+            position: 'absolute',
+            left: isCollapsed ? '10px' : '360px',
+            top: '20px',
+            zIndex: 9999,
+            padding: '6px 12px',
+            backgroundColor: '#ffffff',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            transition: 'left 0.3s ease',
+            whiteSpace: 'nowrap'
         }}
       >
         {isCollapsed ? '⚙️ 配置' : '◀ 收起'}
       </button>
 
-      {/* --- 左侧配置栏 --- */}
+      {/* --- 左侧配置容器 --- */}
       <div 
         className="left-side"
         style={{
-          // 如果折叠：隐藏且宽度为0；如果展开：保持默认宽度
-          width: isCollapsed ? '0px' : '350px', 
-          minWidth: isCollapsed ? '0px' : '350px',
-          padding: isCollapsed ? '0px' : undefined,
-          margin: 0,
-          opacity: isCollapsed ? 0 : 1,
-          overflow: 'hidden',
-          transition: 'all 0.3s ease', // 添加平滑过渡动画
-          borderRight: isCollapsed ? 'none' : '1px solid #e5e7eb'
+            display: isCollapsed ? 'none' : 'flex'
         }}
       >
         <h3>Streaming Avatar Demo</h3>
@@ -267,7 +260,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
                 setAvatarId={}
                 avatars={}
                 setAvatars={}
-                setAvatarVideoUrl={() => {}}
+                setAvatarVideoUrl={() => {}} 
                 disabled={}
               />
             </div>
@@ -397,7 +390,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ api, isJoined, 
               </select>
             </div>
 
-            {/* E2E Type - only show when scene_mode is 'fast_dialogue' */}
+            {/* E2E Type */}
             {sceneMode === 'fast_dialogue' && (
               <div className="form-row">
                 <label>E2E Type:</label>
