@@ -73,9 +73,12 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
           setDebugLog(`✅ 读取缓存 ID: ${cachedId}`);
           setCurrentKbId(cachedId);
           setKbStatus('ready');
-          updateParentState(cachedId); // 即使有缓存，也要再次通知父组件
           initRef.current = true;
-          // 依然检查是否需要创建新的（可选，这里为了稳定先复用）
+          // 关键：直接调用 setKnowledgeId 更新 store
+          if (setKnowledgeId) {
+            setKnowledgeId(cachedId);
+          }
+          updateParentState(cachedId); // 同时更新 avatars 列表
           return; 
       }
 
@@ -124,7 +127,12 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
           localStorage.setItem(`KB_${CUSTOM_AVATAR_ID}`, newKbId);
           localStorage.setItem("LATEST_AKOOL_KB_ID", newKbId); // 全局备用
 
-          // 更新父组件
+          // 关键：直接调用 setKnowledgeId 更新 store
+          if (setKnowledgeId) {
+            setKnowledgeId(newKbId);
+          }
+
+          // 更新 avatars 列表
           updateParentState(newKbId);
 
         } else {
